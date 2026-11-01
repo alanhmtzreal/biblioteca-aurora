@@ -2,6 +2,8 @@
 
 Aplicación full stack para gestionar el catálogo de una biblioteca escolar (sector educativo). Cualquier persona puede consultar los libros; para agregarlos, editarlos o eliminarlos hay que iniciar sesión.
 
+**Aplicación en línea:** https://biblioteca-aurora-puxy.onrender.com (la primera visita puede tardar cerca de un minuto, porque el plan gratuito suspende el servicio por inactividad).
+
 **Tecnologías:** Node.js, Express, MongoDB (Mongoose), JWT, bcryptjs, dotenv, cors, HTML, CSS y JavaScript.
 
 ## Estructura

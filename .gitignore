@@ -1,0 +1,7 @@
+node_modules/
+.env
+.data/
+*.log
+*.docx
+*.mp4
+evidencias/

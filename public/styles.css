@@ -1,0 +1,456 @@
+:root {
+  --tinta: #1f2a37;
+  --tinta-suave: #52606d;
+  --verde: #1f5c4d;
+  --verde-oscuro: #17463a;
+  --verde-claro: #e3f0ec;
+  --papel: #faf7f1;
+  --blanco: #ffffff;
+  --borde: #dcd6c8;
+  --ambar: #f2b84b;
+  --rojo: #b42318;
+  --rojo-oscuro: #912018;
+  --rojo-claro: #fdecea;
+  --radio: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--tinta);
+  background-color: var(--papel);
+}
+
+h1,
+h2,
+.marca {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ambar);
+  outline-offset: 2px;
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.boton-primario {
+  color: var(--blanco);
+  background-color: var(--verde);
+}
+
+.boton-primario:hover {
+  background-color: var(--verde-oscuro);
+}
+
+.boton-secundario {
+  color: var(--verde-oscuro);
+  background-color: var(--blanco);
+  border-color: var(--verde);
+}
+
+.boton-secundario:hover {
+  background-color: var(--verde-claro);
+}
+
+.boton-peligro {
+  color: var(--blanco);
+  background-color: var(--rojo);
+}
+
+.boton-peligro:hover {
+  background-color: var(--rojo-oscuro);
+}
+
+.boton-claro {
+  color: var(--blanco);
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.boton-claro:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- Formularios ---------- */
+label {
+  display: block;
+  margin: 0.9rem 0 0.3rem;
+  font-weight: 600;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  color: var(--tinta);
+  background-color: var(--blanco);
+  border: 1px solid #8a8577;
+  border-radius: 8px;
+}
+
+small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--tinta-suave);
+}
+
+/* ---------- Inicio de sesión ---------- */
+.pagina-acceso {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  min-height: 100vh;
+}
+
+.acceso-portada {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem clamp(2rem, 6vw, 5rem);
+  color: var(--blanco);
+  background-color: var(--verde);
+}
+
+.acceso-portada .marca {
+  margin: 0 0 2rem;
+  font-size: 1.2rem;
+  color: var(--ambar);
+}
+
+.acceso-portada h1 {
+  max-width: 14em;
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+}
+
+.acceso-portada p:last-child {
+  max-width: 32em;
+  margin: 0;
+  font-size: 1.1rem;
+  color: #e6f0ed;
+}
+
+.acceso-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.acceso-tarjeta {
+  width: 100%;
+  max-width: 400px;
+}
+
+.pestanas {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.pestanas button {
+  padding: 0.6rem 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+}
+
+.pestanas button[aria-selected="true"] {
+  color: var(--verde-oscuro);
+  border-bottom-color: var(--verde);
+}
+
+.acceso-tarjeta .boton-primario {
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+.mensaje-error {
+  min-height: 1.5rem;
+  margin: 0.8rem 0;
+  font-weight: 600;
+  color: var(--rojo);
+}
+
+.enlace-volver {
+  color: var(--verde-oscuro);
+}
+
+/* ---------- Barra superior ---------- */
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.8rem clamp(1rem, 4vw, 2.5rem);
+  color: var(--blanco);
+  background-color: var(--verde);
+}
+
+.barra .marca {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--blanco);
+  text-decoration: none;
+}
+
+.barra-sesion {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+/* ---------- Catálogo ---------- */
+.contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.resumen {
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.aviso {
+  margin: 0 0 1.25rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  color: var(--verde-oscuro);
+  background-color: var(--verde-claro);
+  border-radius: var(--radio);
+}
+
+.aviso-error {
+  color: var(--rojo-oscuro);
+  background-color: var(--rojo-claro);
+}
+
+.libros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.libro {
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem 1.25rem;
+  background-color: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.libro-categoria {
+  align-self: flex-start;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--verde-oscuro);
+  background-color: var(--verde-claro);
+  border-radius: 999px;
+}
+
+.libro-titulo {
+  margin: 0.6rem 0 0.1rem;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.libro-autor {
+  margin: 0 0 0.9rem;
+  color: var(--tinta-suave);
+  overflow-wrap: anywhere;
+}
+
+.libro-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin: auto 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--borde);
+}
+
+.libro-datos dt {
+  font-size: 0.75rem;
+  color: var(--tinta-suave);
+}
+
+.libro-datos dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.libro-acciones {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.libro-acciones .boton {
+  flex: 1;
+}
+
+.vacio {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--tinta-suave);
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+}
+
+/* ---------- Diálogos ---------- */
+dialog {
+  width: min(520px, calc(100vw - 2rem));
+  padding: 1.5rem;
+  color: var(--tinta);
+  background-color: var(--blanco);
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(31, 42, 55, 0.3);
+}
+
+dialog::backdrop {
+  background-color: rgba(31, 42, 55, 0.55);
+}
+
+dialog h2 {
+  margin: 0 0 0.5rem;
+}
+
+.campos-dobles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.errores {
+  margin: 0.9rem 0 0;
+  padding-left: 1.2rem;
+  font-weight: 600;
+  color: var(--rojo);
+}
+
+.errores:empty {
+  display: none;
+}
+
+.dialogo-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 800px) {
+  .pagina-acceso {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .acceso-portada {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .acceso-portada .marca {
+    margin-bottom: 0.75rem;
+  }
+
+  .acceso-portada h1 {
+    font-size: 1.6rem;
+  }
+
+  .acceso-portada p:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .encabezado {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros,
+  .campos-dobles {
+    grid-template-columns: 1fr;
+  }
+
+  .campos-dobles {
+    gap: 0;
+  }
+
+  .dialogo-acciones .boton {
+    flex: 1;
+  }
+}

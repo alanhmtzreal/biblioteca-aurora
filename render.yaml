@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: biblioteca-aurora
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/salud
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: JWT_EXPIRES_IN
+        value: 2h
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false

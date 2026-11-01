@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo de la Biblioteca Aurora: consulta y gestión de libros.">
+  <title>Catálogo | Biblioteca Aurora</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="barra">
+    <a class="marca" href="index.html">Biblioteca Aurora</a>
+    <div class="barra-sesion">
+      <span id="saludo"></span>
+      <a id="btn-entrar" class="boton boton-claro" href="login.html">Iniciar sesión</a>
+      <button id="btn-salir" type="button" class="boton boton-claro" hidden>Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <div class="encabezado">
+      <div>
+        <h1>Catálogo</h1>
+        <p id="resumen" class="resumen" aria-live="polite"></p>
+      </div>
+      <button id="btn-nuevo" type="button" class="boton boton-primario" hidden>Agregar libro</button>
+    </div>
+
+    <form id="filtros" class="filtros" role="search">
+      <label for="buscar" class="oculto">Buscar por título o autor</label>
+      <input type="search" id="buscar" placeholder="Buscar por título o autor">
+      <label for="filtro-categoria" class="oculto">Filtrar por categoría</label>
+      <select id="filtro-categoria">
+        <option value="">Todas las categorías</option>
+      </select>
+    </form>
+
+    <p id="aviso" class="aviso" role="status" hidden></p>
+    <ul id="libros" class="libros"></ul>
+    <p id="vacio" class="vacio" hidden>No encontramos libros con esa búsqueda.</p>
+  </main>
+
+  <!-- Una tarjeta del catálogo; app.js la clona por cada libro -->
+  <template id="plantilla-libro">
+    <li class="libro">
+      <span class="libro-categoria"></span>
+      <h2 class="libro-titulo"></h2>
+      <p class="libro-autor"></p>
+      <dl class="libro-datos">
+        <div><dt>Año</dt><dd class="libro-anio"></dd></div>
+        <div><dt>ISBN</dt><dd class="libro-isbn"></dd></div>
+        <div><dt>Ejemplares</dt><dd class="libro-ejemplares"></dd></div>
+      </dl>
+      <div class="libro-acciones" hidden>
+        <button type="button" class="boton boton-secundario" data-accion="editar">Editar</button>
+        <button type="button" class="boton boton-peligro" data-accion="eliminar">Eliminar</button>
+      </div>
+    </li>
+  </template>
+
+  <dialog id="dialogo-libro" aria-labelledby="titulo-dialogo">
+    <form id="form-libro" novalidate>
+      <h2 id="titulo-dialogo">Agregar libro</h2>
+
+      <label for="titulo">Título</label>
+      <input type="text" id="titulo" name="titulo" required maxlength="150">
+
+      <label for="autor">Autor</label>
+      <input type="text" id="autor" name="autor" required maxlength="100">
+
+      <div class="campos-dobles">
+        <div>
+          <label for="isbn">ISBN</label>
+          <input type="text" id="isbn" name="isbn" required inputmode="numeric" placeholder="10 o 13 dígitos">
+        </div>
+        <div>
+          <label for="categoria">Categoría</label>
+          <select id="categoria" name="categoria" required></select>
+        </div>
+      </div>
+
+      <div class="campos-dobles">
+        <div>
+          <label for="anio">Año</label>
+          <input type="number" id="anio" name="anio" required min="1000">
+        </div>
+        <div>
+          <label for="ejemplares">Ejemplares</label>
+          <input type="number" id="ejemplares" name="ejemplares" required min="0" value="1">
+        </div>
+      </div>
+
+      <ul id="errores-libro" class="errores" role="alert"></ul>
+
+      <div class="dialogo-acciones">
+        <button type="button" id="btn-cancelar" class="boton boton-secundario">Cancelar</button>
+        <button type="submit" class="boton boton-primario">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialogo-eliminar" aria-labelledby="titulo-eliminar">
+    <h2 id="titulo-eliminar">Eliminar libro</h2>
+    <p id="texto-eliminar"></p>
+    <div class="dialogo-acciones">
+      <button type="button" id="btn-no-eliminar" class="boton boton-secundario">Cancelar</button>
+      <button type="button" id="btn-si-eliminar" class="boton boton-peligro">Eliminar</button>
+    </div>
+  </dialog>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

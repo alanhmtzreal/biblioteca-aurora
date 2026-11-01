@@ -1,0 +1,27 @@
+{
+  "name": "biblioteca-aurora",
+  "version": "1.0.0",
+  "description": "Aplicación full stack para gestionar el catálogo de una biblioteca escolar (Node.js, Express, MongoDB y JWT)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db": "node scripts/mongo-local.js",
+    "seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.7"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.4.3"
+  }
+}

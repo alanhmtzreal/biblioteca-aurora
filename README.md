@@ -21,6 +21,7 @@ src/
 public/                    Frontend (login.html, index.html, styles.css, js/)
 scripts/mongo-local.js     MongoDB local sin instalación
 scripts/seed.js            Datos iniciales
+postman/                   Colección de Postman con pruebas de la API
 ```
 
 ## Cómo ejecutarla en local
@@ -79,6 +80,10 @@ Ejemplo de cuerpo para crear o actualizar un libro:
 ```
 
 Categorías válidas: Literatura, Ciencias, Historia, Matemáticas, Tecnología, Arte, Infantil.
+
+## Pruebas con Postman
+
+Importa `postman/Biblioteca-Aurora.postman_collection.json` en Postman y ejecútala con **Run collection**, con el servidor encendido. Cada ejecución crea su propio usuario de prueba y deja el catálogo como estaba. Para probar otro servidor, cambia la variable `baseUrl`.
 
 ## Despliegue en la nube
 

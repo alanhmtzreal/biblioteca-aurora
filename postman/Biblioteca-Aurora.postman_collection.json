@@ -1,0 +1,871 @@
+{
+  "info": {
+    "name": "Biblioteca Aurora API",
+    "description": "Pruebas de la API. Ejecuta la colección completa en orden; define baseUrl para probar otro servidor.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Datos únicos por ejecución: se puede correr varias veces",
+          "if (!pm.collectionVariables.get('email')) {",
+          "  const marca = String(Date.now());",
+          "  pm.collectionVariables.set('email', `postman${marca}@aurora.test`);",
+          "  pm.collectionVariables.set('password', `Prueba-${marca}`);",
+          "  pm.collectionVariables.set('isbn', `978${marca.slice(-10)}`);",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "isbn",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "libroId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Salud",
+      "item": [
+        {
+          "name": "Estado del servidor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/salud",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "salud"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Registro inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Lista los 3 errores', () => pm.expect(pm.response.json().detalles).to.have.length(3));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"A\",\n  \"email\": \"mal\",\n  \"password\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Registrar usuario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "const datos = pm.response.json();",
+                  "pm.test('Devuelve un token', () => pm.expect(datos.token).to.be.a('string'));",
+                  "pm.test('No expone la contraseña', () => pm.expect(pm.response.text()).to.not.include('password'));",
+                  "pm.collectionVariables.set('token', datos.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Postman\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Correo duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario Postman\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Contraseña incorrecta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"incorrecta\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Iniciar sesión",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const datos = pm.response.json();",
+                  "pm.test('Devuelve un token', () => pm.expect(datos.token).to.be.a('string'));",
+                  "pm.test('No expone la contraseña', () => pm.expect(pm.response.text()).to.not.include('password'));",
+                  "pm.collectionVariables.set('token', datos.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil con token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/perfil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "perfil"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Perfil sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/perfil",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "perfil"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Libros (CRUD)",
+      "item": [
+        {
+          "name": "Listar libros (abierto)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Devuelve una lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar por texto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros?q=rulfo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "rulfo"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Rayuela\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"{{isbn}}\",\n  \"categoria\": \"Literatura\",\n  \"anio\": 1963,\n  \"ejemplares\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear con datos inválidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"123\",\n  \"categoria\": \"Nada\",\n  \"anio\": 1963,\n  \"ejemplares\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear libro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('libroId', pm.response.json()._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Rayuela\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"{{isbn}}\",\n  \"categoria\": \"Literatura\",\n  \"anio\": 1963,\n  \"ejemplares\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ]
+            }
+          }
+        },
+        {
+          "name": "ISBN duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Rayuela\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"{{isbn}}\",\n  \"categoria\": \"Literatura\",\n  \"anio\": 1963,\n  \"ejemplares\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener libro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es el libro creado', () => pm.expect(pm.response.json().titulo).to.eql('Rayuela'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Rayuela\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"{{isbn}}\",\n  \"categoria\": \"Literatura\",\n  \"anio\": 1963,\n  \"ejemplares\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar libro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Guarda el cambio', () => pm.expect(pm.response.json().ejemplares).to.eql(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Rayuela\",\n  \"autor\": \"Julio Cortázar\",\n  \"isbn\": \"{{isbn}}\",\n  \"categoria\": \"Literatura\",\n  \"anio\": 1963,\n  \"ejemplares\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar sin token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar libro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener libro eliminado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/{{libroId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "{{libroId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Identificador inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "libros",
+                "abc"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
